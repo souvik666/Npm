@@ -14,7 +14,7 @@ program
   .action(function (nameforqr, filename) {
     //console.log(filename, nameforqr);
     QRCode.toFile(
-      `/home/souvik/cake/NPM/${filename}.jpg`,
+      `/home/souvik/cake/NPM/${filename}`,
       `${nameforqr}`,
       {
         color: {
