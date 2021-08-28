@@ -1,41 +1,114 @@
-var inquirer = require("inquirer");
-
-var inquirer = require("inquirer");
+const inquirer = require("inquirer");
+const Choices = require("inquirer/lib/objects/choices");
 const { type } = require("os");
+
 inquirer
   .prompt([
     {
       name: "username",
       type: "input",
-      message: "please eneter your username",
+      message: "Username",
     },
     {
       name: "password",
       type: "password",
-      message: "please eneter your password",
+      message: "Password",
       validate(value) {
-        const pass = value.length >= 8;
-        if (pass) {
-          return true;
-        } else {
-          return "please eneter 8 char pass";
-        }
+        if (value.length >= 8) return true;
+        else return "password must be 8 char long";
       },
     },
+    {
+      name: "address",
+      type: "input",
+      message: "address",
+    },
+    {
+      name: "phone",
+      type: "number",
+      message: "Phone Number",
+      filter(value) {
+        return Number(value);
+      },
+    },
+    {
+      name: "pref",
+      type: "list",
+      message: "Choose your crust:",
+      choices: ["veg", "nonveg"],
+    },
   ])
-  .then((answers) => {
-    let user = answers.username;
-    let password = answers.password;
+  .then((answer) => {
+    let sum = 0;
+    let username = answer.username;
+    let address = answer.address;
+    let phone = answer.phone;
+    let pref = answer.pref;
     let data = {
-      user,
-      password,
+      username,
+      address,
+      phone,
+      pref,
     };
-    console.log(data);
-  })
-  .catch((error) => {
-    if (error.isTtyError) {
-      // Prompt couldn't be rendered in the current environment
+    console.log(answer.pref2);
+    if (answer.pref === "veg") {
+      inquirer
+        .prompt([
+          {
+            name: "vegitem",
+            type: "list",
+            message: "Today available",
+            choices: ["Panir -90/", "veg biriyani -90/", "veg chaowmin -90/"],
+          },
+          {
+            name: "qnty",
+            type: "input",
+            message: "qnty",
+            filter(value) {
+              return Number(value);
+            },
+          },
+        ])
+        .then((el) => {
+          /* sum += 90;
+          let data = {
+            username,
+            address,
+            phone,
+            pref,
+            qnty,
+          };
+          console.log(data); */
+          sum += 90;
+          sum *= el.qnty;
+          data.qnty = el.qnty;
+          data.sum = sum;
+          console.log(data);
+        });
     } else {
-      // Something else went wrong
+      inquirer
+        .prompt([
+          {
+            name: "noneveg",
+            type: "list",
+            message: "Today available",
+            choices: ["chkn -180/", "mutton -180/", "biriyani -180/"],
+          },
+          {
+            name: "qnty",
+            type: "input",
+            message: "qnty",
+            filter(value) {
+              return parseInt(value);
+            },
+          },
+        ])
+        .then((el) => {
+          sum += 180;
+          sum *= el.qnty;
+          data.qnty = el.qnty;
+          data.sum = sum;
+          console.log(data);
+        });
     }
   });
